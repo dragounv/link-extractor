@@ -61,5 +61,10 @@
     "want": ["https://example.com/path/=some244=546=788weird=465="],
     "name": "equals sign at the end of path is legal",
     "comment": "we can't easily know, if equal sign at the end of path does split or not"
+  },
+  {
+    "input": "http://example.com/path-starts:\nhere/and:continues-here",
+    "want": ["http://example.com/path-starts:here/and:continues-here"],
+    "name": "colon split"
   }
 ]

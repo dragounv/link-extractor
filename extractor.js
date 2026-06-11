@@ -239,7 +239,7 @@ class AppendMultiline extends Postprocessor {
     super();
 
     // The simple cases, these almost always mean that we should append next line to link.
-    this.separators = ["-", "_", "%", "="];
+    this.separators = ["-", "_", "%", "=", ":"];
 
     // We need to do more complex checking and processing with these.
     this.hardCases = [];
