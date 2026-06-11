@@ -1,0 +1,65 @@
+[
+  {
+    "input": "http://example.com/path-starts-\nhere/and-continues-here",
+    "want": ["http://example.com/path-starts-here/and-continues-here"],
+    "name": "hyphen split"
+  },
+  {
+    "input": "http://example.com/path-\nstarts-\nhere/and-continues-\nhere",
+    "want": ["http://example.com/path-starts-here/and-continues-here"],
+    "name": "multiple hyphen splits"
+  },
+  {
+    "input": "http://example.com/some-\npath\nhttp://example.com/another/link",
+    "want": ["http://example.com/some-path", "http://example.com/another/link"],
+    "name": "another link immediately follows"
+  },
+  {
+    "input": "http://example.com/some-\npath\ntext that has nothing\nto do with this",
+    "want": ["http://example.com/some-path"],
+    "name": "another link immediately follows"
+  },
+  {
+    "input": "http://faculty.cse.tamu.edu/hlee/csce222/proofs-contradiction-\ncontrapositive.pdf.",
+    "want": ["http://faculty.cse.tamu.edu/hlee/csce222/proofs-contradiction-contrapositive.pdf."],
+    "name": "real case 1"
+  },
+  {
+    "input": "http://example.com/path_starts_\nhere/and_continues_here",
+    "want": ["http://example.com/path_starts_here/and_continues_here"],
+    "name": "underscore split",
+    "comment": "similar logic to hyphens, although underscore splits should be less common"
+  },
+  {
+    "input": "http://example.com/path_\nstarts_\nhere/and_continues_\nhere",
+    "want": ["http://example.com/path_starts_here/and_continues_here"],
+    "name": "multiple underscore splits"
+  },
+  {
+    "input": "https://example.com/n%C3%A9%20%C3%BApln%C4%9B%\n20ide%C3%A1ln%C3%AD%20url/s%20v%C3%ADce%20segmenty",
+    "want": ["https://example.com/n%C3%A9%20%C3%BApln%C4%9B%20ide%C3%A1ln%C3%AD%20url/s%20v%C3%ADce%20segmenty"],
+    "name": "percent split",
+    "comment": "when newline follows percent sign, it almost always means that it was escaped character and the url continues on another line"
+  },
+  {
+    "input": "https://example.com/n%\nC3%A9%20%C3%BApln%C4%9B%\n20ide%\nC3%A1ln%C3%AD%\n20url/s%\n20v%C3%\nADce%\n20segmenty",
+    "want": ["https://example.com/n%C3%A9%20%C3%BApln%C4%9B%20ide%C3%A1ln%C3%AD%20url/s%20v%C3%ADce%20segmenty"],
+    "name": "percent splits"
+  },
+  {
+    "input": "https://example.com/path/?one=\ntwo&three=four",
+    "want": ["https://example.com/path/?one=two&three=four"],
+    "name": "query equal split"
+  },
+  {
+    "input": "https://example.com/path/?one=\ntwo&three=\nfour",
+    "want": ["https://example.com/path/?one=two&three=four"],
+    "name": "query equal splits"
+  },
+  {
+    "input": "https://example.com/path/=some244=546=788weird=465=\n869=encoding8=\n67463=/?one=\ntwo&three=\nfour",
+    "want": ["https://example.com/path/=some244=546=788weird=465="],
+    "name": "equals sign at the end of path is legal",
+    "comment": "we can't easily know, if equal sign at the end of path does split or not"
+  }
+]

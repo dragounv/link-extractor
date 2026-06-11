@@ -1,0 +1,7 @@
+[
+  {
+    "name": "Append percent sign",
+    "input": "https://example.com/bla% ",
+    "want": ["https://example.com/bla%"]
+  }
+]

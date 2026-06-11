@@ -1,0 +1,18 @@
+[
+  {
+    "input": "Some text with link http://example.com",
+    "want": ["http://example.com"]
+  },
+  {
+    "input": "Some text with link http://example.com with text behind",
+    "want": ["http://example.com"]
+  },
+  {
+    "input": "Some text with links http://example.com/one http://example.com/two with text behind",
+    "want": ["http://example.com/one", "http://example.com/two"]
+  },
+  {
+    "input": "Some text with linkhttp://example.com with text behind",
+    "want": ["http://example.com"]
+  }
+]

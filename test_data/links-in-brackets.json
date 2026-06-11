@@ -1,0 +1,51 @@
+[
+  {
+    "input": "http://example.com/more/path}",
+    "want": ["http://example.com/more/path}"],
+    "comment": "TODO: How to handle this? I need more examples and testing.",
+    "skip": true,
+    "name": "}"
+  },
+  {
+    "input": "http://example.com/more/{path}",
+    "want": ["http://example.com/more/{path}"],
+    "name": "Not all brackets need to be removed - {}"
+  },
+  {
+    "input": "http://example.com/)",
+    "want": ["http://example.com/)"],
+    "skip": true,
+    "name": ")"
+  },
+  {
+    "input": "http://example.com/more/(path)",
+    "want": ["http://example.com/more/(path)"],
+    "name": "Not all brackets need to be removed - ()"
+  },
+  {
+    "input": "http://example.com/>",
+    "want": ["http://example.com/>"],
+    "skip": true,
+    "name": ">"
+  },
+  {
+    "input": "http://example.com/more/<path>",
+    "want": ["http://example.com/more/<path>"],
+    "name": "Not all brackets need to be removed - <>"
+  },
+  {
+    "input": "{http://example.com}",
+    "want": ["http://example.com"],
+    "name": "Wrapped in {}"
+  },
+  {
+    "input": "(http://example.com)",
+    "want": ["http://example.com"],
+    "name": "Wrapped in ()"
+  },
+  {
+    "input": "<http://example.com>",
+    "want": ["http://example.com"],
+    "name": "Wrapped in <>"
+  }
+]
