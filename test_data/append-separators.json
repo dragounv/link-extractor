@@ -3,5 +3,16 @@
     "name": "Append percent sign",
     "input": "https://example.com/bla% ",
     "want": ["https://example.com/bla%"]
+  },
+  {
+    "name": "Append percent sign 2",
+    "input": "https://example.com/bla%\nalb",
+    "want": ["https://example.com/bla%"],
+    "comment": "This test should be run without processors that would append the second line, otherwise it will fail"
+  },
+  {
+    "name": "Append colon",
+    "input": "https://example.com/bla: alb",
+    "want": ["https://example.com/bla:"]
   }
 ]
