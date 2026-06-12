@@ -66,5 +66,11 @@
     "input": "http://example.com/path-starts:\nhere/and:continues-here",
     "want": ["http://example.com/path-starts:here/and:continues-here"],
     "name": "colon split"
+  },
+  {
+    "input": "text http:\n//example.com/path\nmore text https:\n//example.com/path",
+    "want": ["http://example.com/path", "https://example.com/path"],
+    "name": "scheme is on previous line",
+    "comment": "this repair is done by PrependHttp postprocessor"
   }
 ]

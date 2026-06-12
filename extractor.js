@@ -143,16 +143,33 @@ class Postprocessor {
  * This postprocessor handles cases where link was extracted without schema / protocol
  */
 class PrependHttp extends Postprocessor {
+  constructor(checkPreviousLine = true) {
+    super();
+    this.checkPreviousLine = checkPreviousLine;
+  }
+
   /**
    * @param {Link} link
    * @param {number} index
    * @param {LinkCollection} linkCollection
    */
   processLink(link, index, linkCollection) {
-    // console.log("Postrocessor run");
-    // console.log(
-    //   `start: ${link.start}, value: ${link.value}, text: ${linkCollection.text}`,
-    // );
+    if (
+      this.checkPreviousLine &&
+      linkCollection.text.slice(link.start - 9, link.start).includes("\n")
+    ) {
+      this.onPreviousLine(link, index, linkCollection);
+    } else {
+      this.onSameLine(link, index, linkCollection);
+    }
+  }
+
+  /**
+   * @param {Link} link
+   * @param {number} index
+   * @param {LinkCollection} linkCollection
+   */
+  onSameLine(link, index, linkCollection) {
     // http://  -- length 7
     // https:// -- length 8
 
@@ -178,6 +195,69 @@ class PrependHttp extends Postprocessor {
       link.value = `https://${link.value}`;
       return;
     }
+  }
+
+  /**
+   * @param {Link} link
+   * @param {number} index
+   * @param {LinkCollection} linkCollection
+   */
+  onPreviousLine(link, index, linkCollection) {
+    // NOTE: This could probably be replaced by something that searches backwards for the scheme ignoring newlines.
+    // But at this point it is not completely impossible for link.value to contain partial scheme.
+
+    // We assume at most one newline.
+    // We also assume that we normalized newlines to just LF, so they have length 1.
+    if (link.start < 9) {
+      return;
+    }
+    // Slice of previous line, without the newline. In theory, it can be multiple lines, but for now, I decided to only handle one.
+    // If future shows that there are many cases where the scheme contains multiple newlines, then I will fix it.
+    // As of now, I never saw more than one.
+    let prevLineSlice = linkCollection.text.slice(link.start - 9, link.start);
+    let count = 0;
+    for (let i = 0; i < prevLineSlice.length; i++) {
+      if (prevLineSlice[i] === "\n") {
+        count++;
+      }
+    }
+    if (count > 1) {
+      // Can't handle more than one for now
+      return;
+    }
+
+    prevLineSlice = prevLineSlice.replace("\n", "");
+
+    // Check if http:// or https:// exists somewhere before or among link.value
+    const concatenatedValue = prevLineSlice.concat(link.value);
+
+    // Try http.
+
+    let schemeIndex = concatenatedValue.indexOf("http://");
+    // Get global index.
+    let newStart = link.start - 8 + schemeIndex - count;
+    // New start can't be bigger. That would mean we found "http" in the path of the link and we don't care for that.
+    if (schemeIndex !== -1 && newStart < link.start) {
+      // Success for http.
+      link.value = concatenatedValue.slice(schemeIndex);
+      link.start = newStart;
+      return;
+    }
+
+    // Try https instead.
+
+    schemeIndex = concatenatedValue.indexOf("https://");
+    // Get global index.
+    newStart = link.start - 8 + schemeIndex - count;
+    // New start can't be bigger. That would mean we found "https" in the path of the link and we don't care for that.
+    if (schemeIndex !== -1 && newStart < link.start) {
+      // Success for https.
+      link.value = concatenatedValue.slice(schemeIndex);
+      link.start = newStart;
+      return;
+    }
+
+    // We found nothing.
   }
 
   /**
@@ -412,6 +492,9 @@ class LinkExtractor {
    * @returns {LinkCollection}
    */
   extract(text) {
+    // Normalize newlines
+    text = text.replace(/\r\n/g, "\n");
+
     const linkCollection = new LinkCollection(text);
     const linkifyResults = linkify.find(text, "url");
     linkifyResults.forEach((link) => linkCollection.addNew(link));
