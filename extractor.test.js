@@ -1,6 +1,8 @@
 const extractor = require("./extractor.js");
 const fs = require("node:fs");
 
+// TODO: DRY this mess
+
 test("'http://example.com' is link", () => {
   const linkExtractor = new extractor.LinkExtractor();
   const input = "http://example.com";
@@ -106,8 +108,9 @@ describe("newline splits", () => {
     }
     test(unit.name, () => {
       const result = linkExtractor.extract(unit.input);
-      expect(result.links.length).toBe(unit.want.length);
-      result.links.forEach((link, i) => expect(link.value).toBe(unit.want[i]));
+      const links = result.getValid();
+      expect(links.length).toBe(unit.want.length);
+      links.forEach((link, i) => expect(link.value).toBe(unit.want[i]));
     });
   });
 });
