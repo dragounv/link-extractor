@@ -447,15 +447,19 @@ class AppendMultiline extends Postprocessor {
     // But this is what the tests are for. Let's do it :)
 
     const onlyBldRegex = /^https?:\/\/.*?\.$/;
+    const links = linkCollection.links;
 
     // Check that this link is only bottommost level domain.
     // Also check that the next link does not start with http, https or www.
+    // Also check that only newline is between the two links.
     if (
       link.value.search(onlyBldRegex) !== -1 &&
-      linkCollection.links.length > index + 1 &&
-      linkCollection.links[index + 1].value.search(/^(?:http:|https:|www)+/)
+      links.length > index + 1 &&
+      link.end + 1 === links[index + 1].start &&
+      linkCollection.text[link.end] === "\n" &&
+      links[index + 1].value.search(/^(?:http:|https:|www)+/)
     ) {
-      const nextLink = linkCollection.links[index + 1];
+      const nextLink = links[index + 1];
       const firstPart = link.value;
       const secondPart = nextLink.value;
       link.value = firstPart.concat(secondPart);

@@ -77,5 +77,11 @@
     "name": "domain dots - single level",
     "input": "http://www.\nexample.com/some/path\nhttps://secure.\nexample.com/some/path",
     "want": ["http://www.example.com/some/path", "https://secure.example.com/some/path"]
+  },
+  {
+    "name": "domain dots - single level - text between",
+    "input": "http://www.\nblablabla\nexample.com/some/path",
+    "want": ["http://www.", "example.com/some/path"],
+    "comment": "if this test breaks in future because of the dot, then just remove the dot from the test"
   }
 ]
