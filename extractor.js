@@ -446,7 +446,7 @@ class AppendMultiline extends Postprocessor {
     // This assumption generally holds for linkify, but if different approach for extracting URLs is used, then it may break.
     // But this is what the tests are for. Let's do it :)
 
-    const onlyBldRegex = /^https?:\/\/.*?\.$/;
+    const onlyBldRegex = /^https?:\/\/[^.]*?\.$/;
     const links = linkCollection.links;
 
     // Check that this link is only bottommost level domain.
@@ -457,7 +457,7 @@ class AppendMultiline extends Postprocessor {
       links.length > index + 1 &&
       link.end + 1 === links[index + 1].start &&
       linkCollection.text[link.end] === "\n" &&
-      links[index + 1].value.search(/^(?:http:|https:|www)+/)
+      links[index + 1].value.search(/^(?:http:|https:|www)+/) === -1
     ) {
       const nextLink = links[index + 1];
       const firstPart = link.value;

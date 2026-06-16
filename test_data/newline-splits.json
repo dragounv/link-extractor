@@ -83,5 +83,11 @@
     "input": "http://www.\nblablabla\nexample.com/some/path",
     "want": ["http://www.", "example.com/some/path"],
     "comment": "if this test breaks in future because of the dot, then just remove the dot from the test"
+  },
+  {
+    "name": "domain dots - single level - only in domain",
+    "input": "http://www.example.com/some/path.\nexample.com",
+    "want": ["http://www.example.com/some/path.", "example.com"]
+
   }
 ]
