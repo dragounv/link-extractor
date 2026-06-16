@@ -14,5 +14,10 @@
     "name": "Append colon",
     "input": "https://example.com/bla: alb",
     "want": ["https://example.com/bla:"]
+  },
+  {
+    "name": "Append dot",
+    "input": "https://example.com/bla.\nalb.",
+    "want":  ["https://example.com/bla."]
   }
 ]

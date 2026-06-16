@@ -284,7 +284,7 @@ class AppendPotentialSeparators extends Postprocessor {
   constructor() {
     super();
     // Always append these
-    this.separators = ["%", ":"];
+    this.separators = ["%", ":", "."];
   }
 
   /**
