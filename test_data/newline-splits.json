@@ -72,5 +72,10 @@
     "want": ["http://example.com/path", "https://example.com/path"],
     "name": "scheme is on previous line",
     "comment": "this repair is done by PrependHttp postprocessor"
+  },
+  {
+    "name": "domain dots - single level",
+    "input": "http://www.\nexample.com/some/path\nhttps://secure.\nexample.com/some/path",
+    "want": ["http://www.example.com/some/path", "https://secure.example.com/some/path"]
   }
 ]

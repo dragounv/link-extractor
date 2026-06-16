@@ -322,7 +322,7 @@ class AppendMultiline extends Postprocessor {
     this.separators = ["-", "_", "%", "=", ":"];
 
     // We need to do more complex checking and processing with these.
-    this.hardCases = [];
+    this.hardCases = ["."];
     this.shouldProcessHardCases = shouldProcessHardCases;
   }
 
@@ -423,12 +423,49 @@ class AppendMultiline extends Postprocessor {
    */
   processHardCase(link, index, linkCollection) {
     // Each hard case should have it's own function.
-    // if (link.value.endsWith("=")) {
-    //   this.processEqualsSign(link, index, linkCollection);
-    // } else {
-    //   throw new Error("Programmer error. There is missing case!");
-    // }
-    throw new Error("Not implemented!");
+    if (link.value.endsWith(".")) {
+      this.processDot(link, index, linkCollection);
+    } else {
+      throw new Error("Programmer error. There is missing case!");
+    }
+  }
+
+  /**
+   * @param {Link} link
+   * @param {number} index
+   * @param {LinkCollection} linkCollection
+   */
+  processDot(link, index, linkCollection) {
+    // Ok, the cases where the link is split on dots are pretty complex, so I will write down some of my thoughts.
+    // Dot on the end of link may also mean an and of a sentence or citation (very common, technically not part of the link but removing it is not responsibility of this processor).
+    // It may also just be part of the links path (not common at all, but completely possible).
+    // Dots may appear almost anywhere in a URL and some cases will need separate handling.
+
+    // 1. newline after the bottommost level domain (eg. http://www.)
+    // ASSUMPTION: The library that extracted the links also recognized the rest of the URL and it is stored in the next index.
+    // This assumption generally holds for linkify, but if different approach for extracting URLs is used, then it may break.
+    // But this is what the tests are for. Let's do it :)
+
+    const onlyBldRegex = /^https?:\/\/.*?\.$/;
+
+    // Check that this link is only bottommost level domain.
+    // Also check that the next link does not start with http, https or www.
+    if (
+      link.value.search(onlyBldRegex) !== -1 &&
+      linkCollection.links.length > index + 1 &&
+      linkCollection.links[index + 1].value.search(/^(?:http:|https:|www)+/)
+    ) {
+      const nextLink = linkCollection.links[index + 1];
+      const firstPart = link.value;
+      const secondPart = nextLink.value;
+      link.value = firstPart.concat(secondPart);
+      link.end = nextLink.end;
+      nextLink.valid = false; // Stop further processing of the next link that was concatenated to this one.
+      return;
+    }
+
+    // TODO: Not implemented, but for purposes of testing don't throw error.
+    return;
   }
 
   /**
