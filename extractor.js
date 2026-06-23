@@ -358,11 +358,22 @@ class AppendMultiline extends Postprocessor {
    * @param {LinkCollection} linkCollection
    */
   processLink(link, index, linkCollection) {
-    // TODO: make this loop that runs until no case matches
-    if (this.isHardCase(link.value)) {
-      this.processHardCase(link, index, linkCollection);
-    } else {
-      this.processSimpleCase(link, index, linkCollection);
+    while (true) {
+      // if (i >= 20) {
+      //   throw new Error("Too many iterations");
+      // }
+      // i++;
+      const oldValue = "".concat(link.value);
+      if (this.isHardCase(link.value)) {
+        this.processHardCase(link, index, linkCollection);
+      } else if (this.endsWithSeparator(link.value)) {
+        this.processSimpleCase(link, index, linkCollection);
+      } else {
+        break;
+      }
+      if (oldValue === link.value) {
+        break;
+      }
     }
   }
 
@@ -531,7 +542,6 @@ class AppendMultiline extends Postprocessor {
       return;
     }
 
-    // TODO: Not implemented, but for purposes of testing don't throw error.
     return;
   }
 

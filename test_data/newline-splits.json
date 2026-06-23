@@ -125,5 +125,10 @@
     "name": "dots in path - file extensions",
     "input": "http://example.com/file.\nhtml\nhttp://example.com/file.\nhtm\nhttp://example.com/file.\npdf\nhttp://example.com/file.\nphp\nhttp://example.com/file.\njpg\nhttp://example.com/file.\npng\nhttp://example.com/file.\ngif",
     "want": ["http://example.com/file.html", "http://example.com/file.htm", "http://example.com/file.pdf", "http://example.com/file.php", "http://example.com/file.jpg", "http://example.com/file.png", "http://example.com/file.gif"]
+  },
+  {
+    "name": "multiple splits in one link",
+    "input": "http://www.\nexample.com/some-\npath/another.\npart/there_\nis-\nsome.\nmore?query=\nfoo",
+    "want": ["http://www.example.com/some-path/another.part/there_is-some.more?query=foo"]
   }
 ]
