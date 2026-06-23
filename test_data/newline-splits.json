@@ -112,8 +112,18 @@
     "comment": "Ok, this one was not even recognized as link. This needs more work, skip it for now."
   },
   {
-    "name": "tmp",
+    "name": "real case 2",
     "input": "[30] Flare3D. (2018). Yellow Planet, [Online]. Available: http://www.flare3d.\ncom/demos/yellowplanet/ (visited on 05/13/2018).\n[31] Microsoft",
     "want": ["http://www.flare3d.com/demos/yellowplanet/"]
+  },
+  {
+    "name": "dots in path",
+    "input": "http://example.com/some/path.\nmore/path.html",
+    "want": ["http://example.com/some/path.more/path.html"]
+  },
+  {
+    "name": "dots in path - file extensions",
+    "input": "http://example.com/file.\nhtml\nhttp://example.com/file.\nhtm\nhttp://example.com/file.\npdf\nhttp://example.com/file.\nphp\nhttp://example.com/file.\njpg\nhttp://example.com/file.\npng\nhttp://example.com/file.\ngif",
+    "want": ["http://example.com/file.html", "http://example.com/file.htm", "http://example.com/file.pdf", "http://example.com/file.php", "http://example.com/file.jpg", "http://example.com/file.png", "http://example.com/file.gif"]
   }
 ]

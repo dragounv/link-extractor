@@ -470,7 +470,7 @@ class AppendMultiline extends Postprocessor {
       return;
     }
 
-    // Prepare slice of the next line.
+    // Prepare slice of the next line. This is used in multiple places below.
     const text = linkCollection.text;
     const nextLineStart = link.end + 1;
     let nextLineEnd = text.indexOf("\n", nextLineStart);
@@ -506,6 +506,28 @@ class AppendMultiline extends Postprocessor {
       if (links.length > index + 1 && links[index + 1].end === link.end) {
         links[index + 1].valid = false;
       }
+      return;
+    }
+
+    // 3. newline after dots in path
+    // Some notes
+    // - Dots do often appear at the end of link paths (those dots are not actually parts of the link just ends of sentence)
+    // - Dots may appear in the last segment of the path usually separating the file extension (example.com/somepage.html)
+    // - Dots may appear at after a single "word" in the beginning of the next sentence (example.com/somepath\n1.2. Sometitle)
+    // - Dots may appear anywhere alse in rest of the path
+    //
+    // Some of these cases are just impossible to handle. We don't know if something is a part of the link or just another sentence.
+    // We must always try to determine that a piece of string is still part of the processed link. Avoid false positives.
+    // We also may check for some file extensions.
+
+    // We only check links which have dot at the end of path.
+    if (
+      link.value.search(/^(?:[^\/]*\/\/)?(?:[^\/]+\/)+[^\/]*\.$/) !== -1 &&
+      nextLine !== null &&
+      (likelyUrlPath(nextLine) || isFileExtension(nextLine))
+    ) {
+      link.value += nextLine;
+      link.end = nextLineEnd;
       return;
     }
 
@@ -549,6 +571,23 @@ function likelyUrlPath(str) {
     return true;
   }
   return false;
+}
+
+const recognizedExtensions = new Set([
+  "html",
+  "htm",
+  "pdf",
+  "php",
+  "jpg",
+  "png",
+  "gif",
+]);
+/**
+ * @param {string} str
+ * @returns {boolean}
+ */
+function isFileExtension(str) {
+  return recognizedExtensions.has(str);
 }
 
 class PostprocessorChain {
