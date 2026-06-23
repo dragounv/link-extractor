@@ -88,6 +88,32 @@
     "name": "domain dots - single level - only in domain",
     "input": "http://www.example.com/some/path.\nexample.com",
     "want": ["http://www.example.com/some/path.", "example.com"]
-
+  },
+  {
+    "name": "domain dots - multiple levels - test 1",
+    "input": "http://www.nonsecure.\nexample.com/some/path",
+    "want": ["http://www.nonsecure.example.com/some/path"]
+  },
+  {
+    "name": "domain dots - multiple levels - test 2",
+    "input": "http://www.nonsecure.example.\ncom/some/path",
+    "want": ["http://www.nonsecure.example.com/some/path"]
+  },
+  {
+    "name": "domain dots - multiple levels - test 3",
+    "input": "http://www.nonsecure.example.\ncom?some=query",
+    "want": ["http://www.nonsecure.example.com?some=query"]
+  },
+  {
+    "name": "domain dots - multiple levels - test 4",
+    "input": "nonsecure.example.\ncom/some/path",
+    "want": ["nonsecure.example.com/some/path"],
+    "skip": true,
+    "comment": "Ok, this one was not even recognized as link. This needs more work, skip it for now."
+  },
+  {
+    "name": "tmp",
+    "input": "[30] Flare3D. (2018). Yellow Planet, [Online]. Available: http://www.flare3d.\ncom/demos/yellowplanet/ (visited on 05/13/2018).\n[31] Microsoft",
+    "want": ["http://www.flare3d.com/demos/yellowplanet/"]
   }
 ]

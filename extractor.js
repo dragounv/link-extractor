@@ -447,6 +447,8 @@ class AppendMultiline extends Postprocessor {
     // But this is what the tests are for. Let's do it :)
 
     const onlyBldRegex = /^https?:\/\/[^.]*?\.$/;
+    // This regex is not able to recognize every new URL, but should be good enough for reducing the number of false positives.
+    const newUrlStartRegex = /^(?:http:|https:|www\.)+/;
     const links = linkCollection.links;
 
     // Check that this link is only bottommost level domain.
@@ -457,7 +459,7 @@ class AppendMultiline extends Postprocessor {
       links.length > index + 1 &&
       link.end + 1 === links[index + 1].start &&
       linkCollection.text[link.end] === "\n" &&
-      links[index + 1].value.search(/^(?:http:|https:|www)+/) === -1
+      links[index + 1].value.search(newUrlStartRegex) === -1
     ) {
       const nextLink = links[index + 1];
       const firstPart = link.value;
@@ -465,6 +467,45 @@ class AppendMultiline extends Postprocessor {
       link.value = firstPart.concat(secondPart);
       link.end = nextLink.end;
       nextLink.valid = false; // Stop further processing of the next link that was concatenated to this one.
+      return;
+    }
+
+    // Prepare slice of the next line.
+    const text = linkCollection.text;
+    const nextLineStart = link.end + 1;
+    let nextLineEnd = text.indexOf("\n", nextLineStart);
+
+    if (nextLineEnd === -1) {
+      nextLineEnd = text.length;
+    }
+
+    // The end index is not part of the slice. That is expected.
+    let nextLine = text.slice(nextLineStart, nextLineEnd);
+
+    // We only want the line until first whitespace.
+    const firstWhitespaceIndex = nextLine.search(/\s/);
+    if (firstWhitespaceIndex !== -1) {
+      nextLineEnd = nextLineStart + firstWhitespaceIndex;
+      nextLine = nextLine.slice(0, firstWhitespaceIndex);
+    }
+
+    // 2. newline after any domain level
+    // This will also fix cases where the next line was not recognized as link.
+
+    // This time, we also want to check for links not starting with http.
+    const onlyDomainRegex = /^(?:https?:\/\/)?(?:[^.\/]*?\.)+?$/;
+
+    if (
+      link.value.search(onlyDomainRegex) !== -1 &&
+      nextLine !== null &&
+      likelyUrlPath(nextLine)
+    ) {
+      link.value += nextLine;
+      link.end = nextLineEnd;
+      // Disable next link if we included it
+      if (links.length > index + 1 && links[index + 1].end === link.end) {
+        links[index + 1].valid = false;
+      }
       return;
     }
 
@@ -488,6 +529,26 @@ class AppendMultiline extends Postprocessor {
       return this.endsWithSeparator(link.value);
     }
   }
+}
+
+/**
+ * This function tries to decide whether a string may be part of URL path.
+ * The results may not be correct, but should be in most expected cases.
+ * @param {string} str
+ * @returns {boolean}
+ */
+function likelyUrlPath(str) {
+  if (str.search(/^(?:http:|https:|www\.)+/) !== -1) {
+    // We only want continuation of URL not entire URL.
+    return false;
+  }
+  if (str.includes("/")) {
+    return true;
+  }
+  if (str.includes("?") && str.includes("=")) {
+    return true;
+  }
+  return false;
 }
 
 class PostprocessorChain {
