@@ -284,7 +284,7 @@ class AppendPotentialSeparators extends Postprocessor {
   constructor() {
     super();
     // Always append these
-    this.separators = ["%", ":", "."];
+    this.separators = ["%", ":", ".", "?"];
   }
 
   /**
@@ -319,7 +319,7 @@ class AppendMultiline extends Postprocessor {
     super();
 
     // The simple cases, these almost always mean that we should append next line to link.
-    this.separators = ["-", "_", "%", "=", ":"];
+    this.separators = ["-", "_", "%", "=", ":", "?"];
 
     // We need to do more complex checking and processing with these.
     this.hardCases = ["."];
@@ -398,6 +398,14 @@ class AppendMultiline extends Postprocessor {
       // It's a simple check and could be confused by some URLs, but those would be broken anyway.
       // Eg. unescaped question mark in path. It should be good enough for most cases.
       if (value.endsWith("=") && !value.includes("?")) {
+        break;
+      }
+
+      // If there isn't an equals before whitespace, then the query is missing and we won't append next line.
+      if (
+        value.endsWith("?") &&
+        text.slice(end).search(/\s/) > text.slice(end).search("=")
+      ) {
         break;
       }
 

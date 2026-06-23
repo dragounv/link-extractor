@@ -130,5 +130,16 @@
     "name": "multiple splits in one link",
     "input": "http://www.\nexample.com/some-\npath/another.\npart/there_\nis-\nsome.\nmore?query=\nfoo",
     "want": ["http://www.example.com/some-path/another.part/there_is-some.more?query=foo"]
+  },
+  {
+    "name": "question mark split",
+    "input": "http://example.com/some/path?\nsome=query",
+    "want": ["http://example.com/some/path?some=query"]
+  },
+  {
+    "name": "question mark split - missing query",
+    "input": "http://example.com/some/path?\nsomething something",
+    "want": ["http://example.com/some/path?"],
+    "comment": "don't append next line when query is missing"
   }
 ]

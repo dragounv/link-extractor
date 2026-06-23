@@ -19,5 +19,10 @@
     "name": "Append dot",
     "input": "https://example.com/bla.\nalb.",
     "want":  ["https://example.com/bla."]
+  },
+  {
+    "name": "Append question mark",
+    "input": "https://example.com/bla?\nalb",
+    "want": ["https://example.com/bla?"]
   }
 ]
