@@ -141,5 +141,10 @@
     "input": "http://example.com/some/path?\nsomething something",
     "want": ["http://example.com/some/path?"],
     "comment": "don't append next line when query is missing"
+  },
+  {
+    "name": "ampersand in query",
+    "input": "http://example.com/path/?some=query&\nanother=query",
+    "want": ["http://example.com/path/?some=query&another=query"]
   }
 ]
