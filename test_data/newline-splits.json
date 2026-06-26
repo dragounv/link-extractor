@@ -156,5 +156,10 @@
     "name": "slash split - two URLs ending in slash",
     "input": "http://example.com/some/path/\nhttps://another.example.com/another/path/",
     "want": ["http://example.com/some/path/", "https://another.example.com/another/path/"]
+  },
+  {
+    "name": "bug - repetition after slash split",
+    "input": "http://doi.wiley.com/\n10.1002/qj.2982.",
+    "want": ["http://doi.wiley.com/10.1002/qj.2982."]
   }
 ]

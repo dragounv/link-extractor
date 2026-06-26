@@ -577,6 +577,7 @@ class AppendMultiline extends Postprocessor {
     let nextLine = text.slice(nextLineStart, nextLineEnd);
     const firstWhitespaceIndex = nextLine.search(/\s/);
     if (firstWhitespaceIndex !== -1) {
+      nextLineEnd = nextLineStart + firstWhitespaceIndex;
       nextLine = nextLine.slice(0, firstWhitespaceIndex);
     }
 
@@ -585,7 +586,7 @@ class AppendMultiline extends Postprocessor {
     }
 
     link.value += nextLine;
-    link.end = nextLineStart + firstWhitespaceIndex;
+    link.end = nextLineStart + nextLineEnd;
   }
 
   /**
