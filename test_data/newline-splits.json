@@ -146,5 +146,15 @@
     "name": "ampersand in query",
     "input": "http://example.com/path/?some=query&\nanother=query",
     "want": ["http://example.com/path/?some=query&another=query"]
+  },
+  {
+    "name": "slash split",
+    "input": "http://example.com/some/\npath/abc",
+    "want": ["http://example.com/some/path/abc"]
+  },
+  {
+    "name": "slash split - two URLs ending in slash",
+    "input": "http://example.com/some/path/\nhttps://another.example.com/another/path/",
+    "want": ["http://example.com/some/path/", "https://another.example.com/another/path/"]
   }
 ]
