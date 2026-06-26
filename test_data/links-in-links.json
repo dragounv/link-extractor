@@ -1,0 +1,8 @@
+[
+  {
+    "name": "remove link that is already part of another link",
+    "input": "http://some.example.com/some/path/\nthis.looks.like.link/another/path",
+    "want": ["http://some.example.com/some/path/this.looks.like.link/another/path"],
+    "comment": "Linkify will extract this as two links, but it is just one link on two lines, so we must remove the other one."
+  }
+]

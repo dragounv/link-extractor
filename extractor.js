@@ -38,6 +38,11 @@ class Link {
 
     // All links start as valid, and processors may invalidate them.
     this.valid = true;
+
+    // This must be set for links that are not created during extraction but during postprocessing.
+    // These links are will be ignored by some filters, that might otherwise remove them.
+    // This allows processors to create duplicates or partial duplicates that share position in text with other links.
+    this.createdByPostprocessor = false;
   }
 
   /**
@@ -675,6 +680,55 @@ class PunctuationFilter extends Postprocessor {
   }
 }
 
+/**
+ * This processor removes (marks as not valid) links that are "contained" in other link.
+ * It does it using the start and end indexes of the links.
+ * It does not compare the values of the links, so it doesn't remove duplicates.
+ */
+class LinksInLinksFilter extends Postprocessor {
+  constructor() {
+    super();
+  }
+
+  /**
+   * @param {Link} link
+   * @param {number} index
+   * @param {LinkCollection} linkCollection
+   */
+  processLink(link, index, linkCollection) {
+    const start = link.start;
+    const end = link.end;
+    const links = linkCollection.links;
+
+    for (let i = 0; i < links.length; i++) {
+      if (i === index) {
+        continue;
+      }
+      const otherLink = links[i];
+      if (link.createdByPostprocessor) {
+        continue;
+      }
+      link.index = index;
+      // Are we contained in otherLink?
+      if (start >= otherLink.start && end <= otherLink.end) {
+        link.valid = false;
+        link.removedBy = i;
+        break;
+      }
+    }
+  }
+
+  /**
+   * @param {Link} link
+   * @param {number} index
+   * @param {LinkCollection} linkCollection
+   * @returns {boolean}
+   */
+  shouldProcess(link, index, linkCollection) {
+    return link.valid && !link.createdByPostprocessor;
+  }
+}
+
 class PostprocessorChain {
   constructor() {
     /** @type {Postprocessor[]} */
@@ -742,6 +796,7 @@ function getPdfPostprocessorChain() {
     new AppendPotentialSeparators(),
     new AppendMultiline(),
     new PunctuationFilter(),
+    new LinksInLinksFilter(),
   ];
   return pdfPostprocessorChain;
 }

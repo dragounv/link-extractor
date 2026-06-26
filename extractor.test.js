@@ -114,3 +114,28 @@ describe("newline splits", () => {
     });
   });
 });
+
+// Links that are split over multiple lines
+describe("remove links contained in other links", () => {
+  const testUnits = JSON.parse(
+    fs.readFileSync("./test_data/links-in-links.json", {
+      encoding: "utf-8",
+    }),
+  );
+
+  const linkExtractor = new extractor.LinkExtractor(
+    extractor.getPdfPostprocessorChain(),
+  );
+
+  testUnits.forEach((unit) => {
+    if (unit.skip) {
+      return;
+    }
+    test(unit.name, () => {
+      const result = linkExtractor.extract(unit.input);
+      const links = result.getValid();
+      expect(links.length).toBe(unit.want.length);
+      links.forEach((link, i) => expect(link.value).toBe(unit.want[i]));
+    });
+  });
+});

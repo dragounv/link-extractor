@@ -27,3 +27,6 @@ const linkExtractor = new extractor.LinkExtractor(
 
 const results = linkExtractor.extract(readStdinSync());
 results.getValues().forEach((link) => process.stdout.write(link + "\n"));
+// results.links.forEach((link) =>
+//   process.stdout.write(JSON.stringify(link) + "\n"),
+// );
