@@ -21,7 +21,7 @@
   },
   {
     "input": "http://faculty.cse.tamu.edu/hlee/csce222/proofs-contradiction-\ncontrapositive.pdf.",
-    "want": ["http://faculty.cse.tamu.edu/hlee/csce222/proofs-contradiction-contrapositive.pdf."],
+    "want": ["http://faculty.cse.tamu.edu/hlee/csce222/proofs-contradiction-contrapositive.pdf"],
     "name": "real case 1"
   },
   {
@@ -81,13 +81,13 @@
   {
     "name": "domain dots - single level - text between",
     "input": "http://www.\nblablabla\nexample.com/some/path",
-    "want": ["http://www.", "example.com/some/path"],
+    "want": ["http://www", "example.com/some/path"],
     "comment": "if this test breaks in future because of the dot, then just remove the dot from the test"
   },
   {
     "name": "domain dots - single level - only in domain",
     "input": "http://www.example.com/some/path.\nexample.com",
-    "want": ["http://www.example.com/some/path.", "example.com"]
+    "want": ["http://www.example.com/some/path", "example.com"]
   },
   {
     "name": "domain dots - multiple levels - test 1",
@@ -139,7 +139,7 @@
   {
     "name": "question mark split - missing query",
     "input": "http://example.com/some/path?\nsomething something",
-    "want": ["http://example.com/some/path?"],
+    "want": ["http://example.com/some/path"],
     "comment": "don't append next line when query is missing"
   },
   {
@@ -160,6 +160,6 @@
   {
     "name": "bug - repetition after slash split",
     "input": "http://doi.wiley.com/\n10.1002/qj.2982.",
-    "want": ["http://doi.wiley.com/10.1002/qj.2982."]
+    "want": ["http://doi.wiley.com/10.1002/qj.2982"]
   }
 ]

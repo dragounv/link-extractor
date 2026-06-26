@@ -647,6 +647,34 @@ function isFileExtension(str) {
   return recognizedExtensions.has(str);
 }
 
+/**
+ * This processor removes punctuation from links.
+ * Punctuation after links is almost never actually part of the link.
+ * This also helps to clear negative effects of AppendPotentialSeparators.
+ */
+class PunctuationFilter extends Postprocessor {
+  constructor() {
+    super();
+    this.punctuation = ["%", ":", ".", "?", ","];
+  }
+
+  /**
+   * @param {Link} link
+   * @param {number} index
+   * @param {LinkCollection} linkCollection
+   */
+  processLink(link, index, linkCollection) {
+    const value = link.value;
+    if (
+      value.length > 0 &&
+      this.punctuation.includes(value[value.length - 1])
+    ) {
+      link.value = value.slice(0, value.length - 1);
+      link.end -= 1;
+    }
+  }
+}
+
 class PostprocessorChain {
   constructor() {
     /** @type {Postprocessor[]} */
@@ -713,6 +741,7 @@ function getPdfPostprocessorChain() {
     new PrependHttp(),
     new AppendPotentialSeparators(),
     new AppendMultiline(),
+    new PunctuationFilter(),
   ];
   return pdfPostprocessorChain;
 }
