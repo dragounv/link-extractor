@@ -586,7 +586,7 @@ class AppendMultiline extends Postprocessor {
     }
 
     link.value += nextLine;
-    link.end = nextLineStart + nextLineEnd;
+    link.end = nextLineEnd;
   }
 
   /**
