@@ -1,17 +1,21 @@
 [
   {
+    "name": "text before link",
     "input": "Some text with link http://example.com",
     "want": ["http://example.com"]
   },
   {
+    "name": "text before and after link",
     "input": "Some text with link http://example.com with text behind",
     "want": ["http://example.com"]
   },
   {
+    "name": "two links in text",
     "input": "Some text with links http://example.com/one http://example.com/two with text behind",
     "want": ["http://example.com/one", "http://example.com/two"]
   },
   {
+    "name": "link immediately after text",
     "input": "Some text with linkhttp://example.com with text behind",
     "want": ["http://example.com"]
   }
