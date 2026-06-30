@@ -161,5 +161,10 @@
     "name": "bug - repetition after slash split",
     "input": "http://doi.wiley.com/\n10.1002/qj.2982.",
     "want": ["http://doi.wiley.com/10.1002/qj.2982"]
+  },
+  {
+    "name": "file like string after slash",
+    "input": "http://www.cnrm.meteo.fr/gmapdoc//IMG/ps/\nBlending.aw-3.ps",
+    "want": ["http://www.cnrm.meteo.fr/gmapdoc//IMG/ps/Blending.aw-3.ps"]
   }
 ]
