@@ -100,3 +100,9 @@ addJsonTests(
   "./test_data/links-in-links.json",
   new extractor.LinkExtractor(extractor.getPdfPostprocessorChain()),
 );
+
+addJsonTests(
+  "false positives",
+  "./test_data/false-positives.json",
+  new extractor.LinkExtractor(extractor.getPdfPostprocessorChain()),
+);

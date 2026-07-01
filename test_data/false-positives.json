@@ -1,0 +1,12 @@
+[
+  {
+    "name": "nonsensical hosts - 1",
+    "input": "g.kg\nexample.com\nkg.kg",
+    "want": ["example.com"]
+  },
+  {
+    "name": "nonsensical hosts - 2",
+    "input": "2.0.CO\nENS.To\nexample.com\nobservations.Al\nSAT.BT",
+    "want": ["example.com"]
+  }
+]

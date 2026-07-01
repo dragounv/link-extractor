@@ -789,6 +789,97 @@ class LinksInLinksFilter extends Postprocessor {
   }
 }
 
+/**
+ * This filter removes links that look like hosts without path and scheme (those may be valid links),
+ * but that are most likely just gibberish.
+ *
+ * It tries to preserve those, that may be actual links, by allowing some TLDs.
+ * We can't allow all registered TLDs, because it let's through too much junk.
+ * Feel free to modify the whitelist to suite your needs.
+ */
+class NonsenseHostsFilter extends Postprocessor {
+  constructor() {
+    super();
+    // I tried to choose those that are used often (and not also used as extension of python files, among other things...)
+    this.allowedTLDs = [
+      "com",
+      "org",
+      "net",
+      "int",
+      "edu",
+      "gov",
+      "ai",
+      "at",
+      "be",
+      "br",
+      "by",
+      "ca",
+      "ch",
+      "cn",
+      "cz",
+      "de",
+      "eu",
+      "fr",
+      "gg",
+      "in",
+      "io",
+      "it",
+      "jp",
+      "ly",
+      "me",
+      "pl",
+      "ru",
+      "sk",
+      "uk",
+      "us",
+    ];
+  }
+
+  /**
+   * @param {Link} link
+   * @param {number} index
+   * @param {LinkCollection} linkCollection
+   */
+  processLink(link, index, linkCollection) {
+    // in "shouldProcess" we check that link.value is just host, so we can safely separate it's domains into list.
+    const domains = link.value.split(".");
+
+    // Sanity check
+    if (domains.length < 2) {
+      throw new Error(
+        "If you see this error, then there is a bug in the NonsenseHostsFilter class. Please open an issue.",
+      );
+    }
+
+    const tld = domains[domains.length - 1];
+    if (!this.allowedTLDs.includes(tld.toLowerCase())) {
+      link.valid = false;
+      return;
+    }
+  }
+
+  /**
+   * @param {Link} link
+   * @param {number} index
+   * @param {LinkCollection} linkCollection
+   * @returns {boolean}
+   */
+  shouldProcess(link, index, linkCollection) {
+    const value = link.value;
+    return (
+      link.valid && this._isOnlyNonIpHost(value) && !value.startsWith("www")
+    );
+  }
+
+  /**
+   * @param {string} str
+   * @returns {boolean}
+   */
+  _isOnlyNonIpHost(str) {
+    return str.search(/^(?:[A-Za-z0-9-]+\.)+[A-Za-z0-9-]{2,}$/) !== -1;
+  }
+}
+
 class PostprocessorChain {
   constructor() {
     /** @type {Postprocessor[]} */
@@ -857,6 +948,7 @@ function getPdfPostprocessorChain() {
     new AppendMultiline(),
     new PunctuationFilter(),
     new LinksInLinksFilter(),
+    new NonsenseHostsFilter(),
   ];
   return pdfPostprocessorChain;
 }
@@ -870,5 +962,8 @@ module.exports = {
   PrependHttp,
   AppendMultiline,
   AppendPotentialSeparators,
+  PunctuationFilter,
+  LinksInLinksFilter,
+  NonsenseHostsFilter,
   getPdfPostprocessorChain,
 };
